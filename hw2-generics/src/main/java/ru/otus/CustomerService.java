@@ -11,9 +11,6 @@ public class CustomerService {
     private final NavigableMap<Customer, String> treeMap = new TreeMap<>(customerComparator);
 
     public static class CustomerServiceEntry extends SimpleImmutableEntry<Customer, String> {
-        public CustomerServiceEntry(Customer key, String value) {
-            super(key, value);
-        }
         public CustomerServiceEntry(Map.Entry<? extends Customer, ? extends String> entry) {
             super(entry);
         }
@@ -28,7 +25,7 @@ public class CustomerService {
         if (result == null) {
             return null;
         }
-        return new CustomerServiceEntry(result.getKey(), result.getValue());
+        return new CustomerServiceEntry(result);
     }
 
     public CustomerServiceEntry getNext(Customer customer) {
@@ -39,7 +36,7 @@ public class CustomerService {
         if (result == null) {
             return null;
         }
-        return new CustomerServiceEntry(result.getKey(), result.getValue());
+        return new CustomerServiceEntry(result);
     }
 
     public void add(Customer customer, String data) {
