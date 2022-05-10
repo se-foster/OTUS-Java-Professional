@@ -1,4 +1,4 @@
-rootProject.name = 'gradle'
+rootProject.name = 'otus'
 include 'hw01-gradle'
-include 'hw2-generics'
-
+include 'hw02-generics'
+include 'hw03-test-framework'
