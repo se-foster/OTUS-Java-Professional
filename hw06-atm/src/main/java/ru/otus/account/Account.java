@@ -20,10 +20,6 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(long balance) {
-        this.balance = balance;
-    }
-
     public int getMoney(int value, Currency currency) throws ForbiddenOperation {
         if (currency != this.currency) {
             throw new ForbiddenOperation("Валюта для снятия не соответствует валюте счета");
