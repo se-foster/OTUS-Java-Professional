@@ -81,7 +81,7 @@ class ComplexProcessorTest {
     }
 
     private void secondProcessorTest(int second) {
-        List<Processor> processors = List.of(new ProcessorSecond(()->second));
+        List<Processor> processors = List.of(new ProcessorSecond(() -> second));
         var complexProcessor = new ComplexProcessor(processors, ex -> {
             throw new EvenSecondException();
         });
