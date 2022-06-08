@@ -1,18 +1,18 @@
 package ru.otus.handler;
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
 import ru.otus.listener.Listener;
 import ru.otus.processor.Processor;
+import ru.otus.processor.homework.EvenSecondException;
+import ru.otus.processor.homework.ProcessorSecond;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -71,6 +71,22 @@ class ComplexProcessorTest {
         //then
         verify(processor1, times(1)).process(message);
         verify(processor2, never()).process(message);
+    }
+
+    @Test
+    @DisplayName("Тест секунд")
+    void secondsTest() {
+        secondProcessorTest(111);
+        assertThatExceptionOfType(EvenSecondException.class).isThrownBy(() -> secondProcessorTest(222));
+    }
+
+    private void secondProcessorTest(int second) {
+        List<Processor> processors = List.of(new ProcessorSecond(()->second));
+        var complexProcessor = new ComplexProcessor(processors, ex -> {
+            throw new EvenSecondException();
+        });
+        Message message = new Message.Builder(1).build();
+        complexProcessor.handle(message);
     }
 
     @Test
