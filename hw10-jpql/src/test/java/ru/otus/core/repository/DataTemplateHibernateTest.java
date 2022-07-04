@@ -37,7 +37,7 @@ class DataTemplateHibernateTest extends AbstractHibernateTest {
         assertThat(savedClient.getName()).isEqualTo(client.getName());
 
         //when
-        var loadedSavedClient = transactionManager.doInReadOnlyTransaction(session ->{
+        var loadedSavedClient = transactionManager.doInReadOnlyTransaction(session -> {
                     var res = clientTemplate.findById(session, savedClient.getId())
                             .orElseThrow(() -> new AssertionFailedError("expected: not <null>"));
                     return Optional.ofNullable(res.clone());
