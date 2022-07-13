@@ -1,8 +1,5 @@
 package ru.otus.crm.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,13 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
 public class Client implements Cloneable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -29,10 +28,10 @@ public class Client implements Cloneable {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
-    private Address address;
+    private Address address = new Address();
 
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Phone> phones;
+    private List<Phone> phones = new ArrayList<>();
 
     public Client() {
     }
@@ -51,29 +50,27 @@ public class Client implements Cloneable {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.phones = phones == null ? new ArrayList<>() : getUpdatedPhoneList(phones);
+        this.phones = copyPhones(phones);
     }
 
-    private List<Phone> getUpdatedPhoneList(List<Phone> phones) {
-        phones.forEach(phone -> phone.setClient(this));
-        return phones;
+    private List<Phone> copyPhones(List<Phone> phones) {
+        if (phones == null) return List.of();
+        return phones.stream().peek(phone -> phone.setClient(this)).toList();
     }
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name, new Address(this.address), clonePhones(this.phones));
+        return new Client(this.id, this.name, new Address(this.address), phoneCopy(this.phones));
     }
 
-    private List<Phone> clonePhones(List<Phone> phones) {
-        return phones.stream().map(Phone::new).toList();
+    private List<Phone> phoneCopy(List<Phone> phones) {
+        return phones.stream()
+                .map(Phone::new)
+                .toList();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -82,6 +79,14 @@ public class Client implements Cloneable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public List<Phone> getPhones() {
+        return phones;
     }
 
     @Override

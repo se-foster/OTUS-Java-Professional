@@ -4,6 +4,7 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.repository.DataTemplateHibernate;
+import ru.otus.core.repository.EntityGraphUtil;
 import ru.otus.core.repository.HibernateUtils;
 import ru.otus.core.sessionmanager.TransactionManagerHibernate;
 import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
@@ -29,7 +30,8 @@ public class DbServiceDemo {
 
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
 ///
-        var clientTemplate = new DataTemplateHibernate<>(Client.class);
+        EntityGraphUtil<Client> entityGraphUtil = new EntityGraphUtil<>(Client.class);
+        var clientTemplate = new DataTemplateHibernate<>(Client.class, entityGraphUtil);
 ///
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
         dbServiceClient.saveClient(new Client("dbServiceFirst"));

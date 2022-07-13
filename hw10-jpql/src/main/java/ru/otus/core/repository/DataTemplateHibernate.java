@@ -8,14 +8,18 @@ import java.util.Optional;
 public class DataTemplateHibernate<T> implements DataTemplate<T> {
 
     private final Class<T> clazz;
+    private final EntityGraphUtil<T> entityGraph;
 
-    public DataTemplateHibernate(Class<T> clazz) {
+    public DataTemplateHibernate(Class<T> clazz, EntityGraphUtil<T> entityGraph) {
         this.clazz = clazz;
+        this.entityGraph = entityGraph;
     }
 
     @Override
     public Optional<T> findById(Session session, long id) {
-        return Optional.ofNullable(session.find(clazz, id));
+        var query = session.createQuery(String.format("from %s where id = " + id, clazz.getSimpleName()), clazz);
+        entityGraph.apply(session, query);
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
@@ -27,12 +31,15 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
                 .where(criteriaBuilder.equal(root.get(entityFieldName), entityFieldValue));
 
         var query = session.createQuery(criteriaQuery);
+        entityGraph.apply(session, query);
         return query.getResultList();
     }
 
     @Override
     public List<T> findAll(Session session) {
-        return session.createQuery(String.format("from %s", clazz.getSimpleName()), clazz).getResultList();
+        var query = session.createQuery(String.format("from %s", clazz.getSimpleName()), clazz);
+        entityGraph.apply(session, query);
+        return query.getResultList();
     }
 
     @Override
