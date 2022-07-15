@@ -4,8 +4,11 @@ import junit.framework.AssertionFailedError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.base.AbstractHibernateTest;
+import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Phone;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,14 +20,14 @@ class DataTemplateHibernateTest extends AbstractHibernateTest {
     @DisplayName(" корректно сохраняет, изменяет и загружает клиента по заданному id")
     void shouldSaveAndFindCorrectClientById() {
         //given
-        var client = new Client("Вася");
+//        var client = new Client("Вася");
 
         // Это надо раскомментировать, у выполненного ДЗ, все тесты должны проходить
         // Кроме удаления комментирования, тестовый класс менять нельзя
-/*
+
         var client = new Client(null, "Vasya", new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "14-666-333")));
-*/
+
 
         //when
         var savedClient = transactionManager.doInTransaction(session -> {
@@ -37,7 +40,7 @@ class DataTemplateHibernateTest extends AbstractHibernateTest {
         assertThat(savedClient.getName()).isEqualTo(client.getName());
 
         //when
-        var loadedSavedClient = transactionManager.doInReadOnlyTransaction(session ->{
+        var loadedSavedClient = transactionManager.doInReadOnlyTransaction(session -> {
                     var res = clientTemplate.findById(session, savedClient.getId())
                             .orElseThrow(() -> new AssertionFailedError("expected: not <null>"));
                     return Optional.ofNullable(res.clone());
