@@ -37,4 +37,9 @@ public class CacheServiceImpl implements CacheService {
             clientList.forEach(client -> myCache.put(client.getId(),client));
         }
     }
+
+    @Override
+    public boolean isConsistent() {
+        return myCache.getResetCount() == 0;
+    }
 }

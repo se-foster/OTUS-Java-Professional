@@ -15,4 +15,6 @@ public interface CacheService {
     List<Client> findAll();
 
     void saveAll(List<Client> clientList);
+
+    boolean isConsistent();
 }

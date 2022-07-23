@@ -18,16 +18,21 @@ public class MyCache<K, V> implements HwCache<K, V> {
             resetCount++;
         }
         cache.put(key, value);
+        notify(key, value, "put");
     }
 
     @Override
     public void remove(K key) {
+        var value = cache.get(key);
         cache.remove(key);
+        notify(key, value, "remove");
     }
 
     @Override
     public V get(K key) {
-        return cache.get(key);
+        var value = cache.get(key);
+        notify(key, value, "get");
+        return value;
     }
 
     @Override
@@ -65,5 +70,9 @@ public class MyCache<K, V> implements HwCache<K, V> {
     @Override
     public int getMaxSize() {
         return MAX_SIZE;
+    }
+
+    private void notify(K key, V value, String action) {
+        listeners.forEach(listener -> listener.notify(key, value, action));
     }
 }

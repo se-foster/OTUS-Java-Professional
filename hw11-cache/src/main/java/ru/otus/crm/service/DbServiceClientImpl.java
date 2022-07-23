@@ -29,9 +29,11 @@ public class DbServiceClientImpl implements DBServiceClient {
             if (client.getId() == null) {
                 clientDataTemplate.insert(session, clientCloned);
                 log.info("created client: {}", clientCloned);
+                cacheService.saveClient(clientCloned);
                 return clientCloned;
             }
             clientDataTemplate.update(session, clientCloned);
+            cacheService.update(clientCloned);
             log.info("updated client: {}", clientCloned);
             return clientCloned;
         });
@@ -39,6 +41,9 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public Optional<Client> getClient(long id) {
+        var cached = cacheService.getClient(id);
+        if (cached.isPresent()) return cached;
+
         return transactionManager.doInReadOnlyTransaction(session -> {
             var clientOptional = clientDataTemplate.findById(session, id);
             log.info("client: {}", clientOptional);
@@ -48,8 +53,12 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public List<Client> findAll() {
+        if (cacheService.isConsistent()) {
+            return cacheService.findAll();
+        }
         return transactionManager.doInReadOnlyTransaction(session -> {
             var clientList = clientDataTemplate.findAll(session);
+            cacheService.saveAll(clientList);
             log.info("clientList:{}", clientList);
             return clientList;
         });
