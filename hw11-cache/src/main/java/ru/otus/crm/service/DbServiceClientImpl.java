@@ -46,6 +46,7 @@ public class DbServiceClientImpl implements DBServiceClient {
 
         return transactionManager.doInReadOnlyTransaction(session -> {
             var clientOptional = clientDataTemplate.findById(session, id);
+            clientOptional.ifPresent(cacheService::saveClient);
             log.info("client: {}", clientOptional);
             return clientOptional;
         });
