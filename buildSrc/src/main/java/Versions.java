@@ -3,4 +3,5 @@ public interface Versions {
     String jmh = "1.35";
     String asm = "9.2";
     String glassfishJson = "2.0.1";
+    String reflections = "0.10.2";
 }
