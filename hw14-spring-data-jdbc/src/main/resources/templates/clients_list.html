@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" content="text/html;">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <title>Список клиентов</title>
@@ -10,24 +10,18 @@
     <h2>Client Table</h2>
     <table class="table">
         <thead>
-            <tr>
-                <th>Имя</th>
-                <th>Адрес</th>
-                <th>Номер телефона</th>
-            </tr>
+        <tr>
+            <th>Имя</th>
+            <th>Адрес</th>
+            <th>Номер телефона</th>
+        </tr>
         </thead>
         <tbody>
-            <#list clients as client>
-                <tr>
-                    <td>${client.name}</td>
-                    <td>${client.address.street}</td>
-                    <td>
-                        <#list client.phones as phone>
-                            ${phone.number}
-                        </#list>
-                    </td>
-                </tr>
-            </#list>
+        <tr scope="row" th:each="client : ${clients}" align="center">
+            <td th:utext="${client.name}">...</td>
+            <td th:utext="${client.street}">...</td>
+            <td th:utext="${client.phonesNumbers}">...</td>
+        </tr>
         </tbody>
     </table>
 </div>
