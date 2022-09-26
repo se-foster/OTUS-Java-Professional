@@ -15,3 +15,5 @@ include 'hw13-dependency-injection'
 include 'hw14-spring-data-jdbc'
 include 'hw15-multithreading'
 include 'hw16-concurrent-collections'
+include 'hw17-grpc'
+
