@@ -7,4 +7,9 @@ public interface Versions {
     String freemarker = "2.3.31";
     String gson = "2.9.0";
     String reflections = "0.10.2";
+    String protobufProtoc = "3.21.6";
+    String grpc = "1.49.1";
+    String errorProneAnnotations = "2.15.0";
+    String tomcatAnnotationsApi = "6.0.53";
+    String protobuf = "3.21.6";
 }

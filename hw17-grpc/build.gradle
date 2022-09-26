@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id "com.google.protobuf" version "0.8.17"
+    id 'idea'
+}
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java"
+    implementation "com.google.errorprone:error_prone_annotations"
+    implementation 'io.grpc:grpc-protobuf'
+    implementation 'io.grpc:grpc-stub'
+
+
+    runtimeOnly 'io.grpc:grpc-netty-shaded'
+    compileOnly 'org.apache.tomcat:annotations-api'
+}
+
+def filesBaseDir = "$projectDir/build/generated"
+def protoSrcDir = "$projectDir/build/generated/proto"
+def grpcSrcDir = "$projectDir/build/generated/grpc"
+
+sourceSets {
+    main {
+        proto {
+            srcDir protoSrcDir
+        }
+        java {
+            srcDir grpcSrcDir
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file(protoSrcDir)
+        sourceDirs += file(grpcSrcDir)
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${Versions.protobufProtoc}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${Versions.grpc}"
+        }
+    }
+
+    generatedFilesBaseDir = filesBaseDir
+    generateProtoTasks {
+        ofSourceSet('main')*.plugins { grpc {} }
+    }
+}
+
+test {}
