@@ -14,7 +14,6 @@ public class ClientNumberService {
 
     private final AtomicInteger serverResult = new AtomicInteger(0);
 
-    private int currentResult = 0;
     private int currentValue = 0;
 
     private final static int FIRST_VALUE = 0;
@@ -47,7 +46,7 @@ public class ClientNumberService {
         stub.get(requestNumbers, new StreamObserver<>() {
             @Override
             public void onNext(NumberServer value) {
-                serverResult.getAndSet(value.getResult());
+                serverResult.set(value.getResult());
                 System.out.println("server result is " + serverResult.get());
                 startServerReadLatch.countDown();
             }
@@ -64,18 +63,13 @@ public class ClientNumberService {
         });
     }
 
-    private synchronized void writeByClient(CountDownLatch latch) throws InterruptedException {
+    private void writeByClient(CountDownLatch latch) throws InterruptedException {
         latch.await();
         for (int i = 0; i < CLIENT_LOOP_COUNT; i++) {
 
             Thread.sleep(1000);
 
-            if (currentResult == serverResult.get()) {
-                currentValue++;
-            } else {
-                currentResult = serverResult.get();
-                currentValue += currentResult + 1;
-            }
+            currentValue += serverResult.getAndSet(0) + 1;
             System.out.println("client is " + currentValue);
         }
     }
