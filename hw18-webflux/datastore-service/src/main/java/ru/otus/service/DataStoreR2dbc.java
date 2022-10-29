@@ -1,4 +1,4 @@
-package ru.petrelevich.service;
+package ru.otus.service;
 
 import java.time.Duration;
 import org.slf4j.Logger;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import ru.petrelevich.domain.Message;
-import ru.petrelevich.repository.MessageRepository;
+import ru.otus.domain.Message;
+import ru.otus.repository.MessageRepository;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -34,5 +34,10 @@ public class DataStoreR2dbc implements DataStore {
         log.info("loadMessages roomId:{}", roomId);
         return messageRepository.findByRoomId(roomId)
                 .delayElements(Duration.of(3, SECONDS), workerPool);
+    }
+
+    @Override
+    public Flux<Message> getAllMessages() {
+        return messageRepository.findAll();
     }
 }

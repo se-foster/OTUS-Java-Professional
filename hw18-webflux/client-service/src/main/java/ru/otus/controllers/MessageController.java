@@ -1,4 +1,4 @@
-package ru.petrelevich.controllers;
+package ru.otus.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,12 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.util.HtmlUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.petrelevich.domain.Message;
+import ru.otus.domain.Message;
 
 @Controller
 public class MessageController {
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
-
+    private static final int ALL_MESSAGE_ROOM_ID = 1408;
     private static final String TOPIC_TEMPLATE = "/topic/response.";
 
     private final WebClient datastoreClient;
@@ -33,14 +33,17 @@ public class MessageController {
     }
 
     @MessageMapping("/message.{roomId}")
-    @SendTo(TOPIC_TEMPLATE + "{roomId}")
+    @SendTo({TOPIC_TEMPLATE + "{roomId}", TOPIC_TEMPLATE + ALL_MESSAGE_ROOM_ID})
     public Message getMessage(@DestinationVariable String roomId, Message message) {
-        logger.info("got message:{}, roomId:{}", message, roomId);
-        saveMessage(roomId, message)
-                .subscribe(msgId -> logger.info("message send id:{}", msgId));
-        return new Message(HtmlUtils.htmlEscape(message.messageStr()));
+        if (roomId.equals(String.valueOf(ALL_MESSAGE_ROOM_ID))) {
+            logger.info("skip message:{}, because roomId is {}", message, roomId);
+            return null;
+        } else {
+            logger.info("save message:{}, roomId:{}", message, roomId);
+            saveMessage(roomId, message).subscribe(msgId -> logger.info("message send id:{}", msgId));
+            return new Message(HtmlUtils.htmlEscape(message.messageStr()));
+        }
     }
-
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {

@@ -1,4 +1,4 @@
-package ru.petrelevich.api;
+package ru.otus.api;
 
 
 import org.springframework.http.MediaType;
@@ -8,17 +8,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import ru.petrelevich.domain.Message;
-import ru.petrelevich.domain.MessageDto;
+import ru.otus.domain.Message;
+import ru.otus.domain.MessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.petrelevich.service.DataStore;
+import ru.otus.service.DataStore;
 
 @RestController
 public class DataController {
     private static final Logger log = LoggerFactory.getLogger(DataController.class);
+    private static final String ALL_MESSAGE_ROOM_ID = "1408";
     private final DataStore dataStore;
     private final Scheduler workerPool;
 
@@ -48,12 +49,18 @@ public class DataController {
     @GetMapping(value = "/msg/{roomId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<MessageDto> getMessagesByRoomId(@PathVariable("roomId") String roomId) {
         log.info("getMessagesByRoomId, roomId:{}", roomId);
-        return Mono.just(roomId)
-                .doOnNext(room -> log.info("loading for roomId:{}", room))
-                .flatMapMany(dataStore::loadMessages)
-                .publishOn(workerPool)
-                .map(message -> new MessageDto(message.getMsgText()))
-                .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
-                .subscribeOn(workerPool);
+        Flux<Message> result;
+        if (roomId.equals(ALL_MESSAGE_ROOM_ID)) {
+            log.info("loading messages from all rooms");
+            result = dataStore.getAllMessages();
+        } else {
+            result = Mono.just(roomId)
+                    .doOnNext(room -> log.info("loading for roomId:{}", room))
+                    .flatMapMany(dataStore::loadMessages);
+        }
+        return result.publishOn(workerPool)
+                    .map(message -> new MessageDto(message.getMsgText()))
+                    .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
+                    .subscribeOn(workerPool);
     }
 }
