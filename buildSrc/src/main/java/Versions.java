@@ -12,4 +12,7 @@ public interface Versions {
     String errorProneAnnotations = "2.15.0";
     String tomcatAnnotationsApi = "6.0.53";
     String protobuf = "3.21.6";
+    String bootstrap = "5.2.2";
+    String sockjs = "1.5.1";
+    String stomp = "2.3.4";
 }

@@ -29,7 +29,7 @@ allprojects {
     dependencyManagement {
         dependencies {
             imports {
-                mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.0"
+                mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.1"
                 mavenBom "org.testcontainers:testcontainers-bom:1.17.1"
                 mavenBom "com.google.protobuf:protobuf-bom:3.21.1"
             }
@@ -44,6 +44,9 @@ allprojects {
             dependency("com.google.errorprone:error_prone_annotations:${Versions.errorProneAnnotations}")
             dependency("org.apache.tomcat:annotations-api:${Versions.tomcatAnnotationsApi}")
             dependency("com.google.protobuf:protobuf-java:${Versions.protobuf}")
+            dependency("org.webjars:bootstrap:${Versions.bootstrap}")
+            dependency("org.webjars:sockjs-client:${Versions.sockjs}")
+            dependency("org.webjars:stomp-websocket:${Versions.stomp}")
         }
     }
 

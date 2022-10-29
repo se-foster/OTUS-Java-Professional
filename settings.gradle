@@ -16,4 +16,5 @@ include 'hw14-spring-data-jdbc'
 include 'hw15-multithreading'
 include 'hw16-concurrent-collections'
 include 'hw17-grpc'
-
+include 'hw18-webflux:client-service'
+include 'hw18-webflux:datastore-service'
