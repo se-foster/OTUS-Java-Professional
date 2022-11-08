@@ -3,6 +3,7 @@ package ru.otus;
 import java.util.Stack;
 
 public class CustomerReverseOrder {
+    //todo: 2. реализовать методы этого класса - done
 
     private final Stack<Customer> stack = new Stack<>();
 

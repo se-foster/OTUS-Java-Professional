@@ -3,6 +3,7 @@ package ru.otus;
 import java.util.Objects;
 
 public class Customer {
+    //todo: 1. в этом классе надо исправить ошибки - done
     private final long id;
     private String name;
     private long scores;

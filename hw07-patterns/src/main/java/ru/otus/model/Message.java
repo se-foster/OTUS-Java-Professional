@@ -13,7 +13,7 @@ public class Message {
     private final String field9;
     private final String field10;
 
-    //todo: 1. Добавить поля field11 - field13 (для field13 используйте класс ObjectForMessage)
+    //todo: 1. Добавить поля field11 - field13 (для field13 используйте класс ObjectForMessage) - done
     private final String field11;
     private final String field12;
     private final ObjectForMessage field13;

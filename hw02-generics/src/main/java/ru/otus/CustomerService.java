@@ -7,6 +7,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class CustomerService {
+    //todo: 3. реализовать методы этого класса - done
     private final Comparator<Customer> customerComparator = (o1, o2) -> (int) (o1.getScores() - o2.getScores());
     private final NavigableMap<Customer, String> treeMap = new TreeMap<>(customerComparator);
 

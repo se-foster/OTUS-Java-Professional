@@ -1,7 +1,5 @@
 package ru.otus.processor.homework;
 
-import java.sql.Date;
-
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
 
